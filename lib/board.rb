@@ -16,34 +16,27 @@ class Cell
   end
 end
 
-class Row
-  attr_accessor :cells
-  attr_reader :num
-
-  def initialize(num)
-    @num = num
-    @cells = Cell.build_cells(8)
-  end
-
-  def txt
-    "#{@num}#{@cells.map {|c| c.val}.join('')}"
-  end
-end
-
 class Board
   attr_accessor :rows
+  attr_reader :knight
 
-  def initialize
-    @rows = Array.new
-    until @rows.length == 8 do 
-      @rows << Row.new(@rows.length)
+  def initialize(rows = 8)
+    @rows = build_rows(rows)
+    @knight = self.rand_pos
+  end
+
+  def build_rows(amt)
+    output = []
+    until output.length == amt do 
+      output << Cell.build_cells(amt)
     end
+    output
   end
 
   def txt
     output = []
-    @rows.each do |row|
-      output.unshift("#{row.txt}\n")
+    @rows.each_with_index do |row, idx|
+      output.unshift("#{idx}#{row.map {|c| c.val}.join('')}\n")
     end
     output.unshift("\n")
     output. << "  0  1  2  3  4  5  6  7"
@@ -51,19 +44,24 @@ class Board
   end
 
   def pos(y, x)
-    self.rows[y].cells[x]
+    begin
+      self.rows[y].cells[x]
+    rescue
+      'nil'
+    end
+  end
+
+  def rand_pos
+    y = rand(0..7)
+    x = rand(0..7)
+    pos(y, x)
   end
 
 end
 
-class Knight
-  def initialize
-    
-  end
-
-end
-
-board = Board.new
-board.rows[3].cells[3].val = '[K]'
+board = Board.new(8)
 puts board.txt
-p board.pos(3,3)
+
+#rework: remove Cell class and just make a row = [[0,0], [0,1], [0,2]....]
+                                            #or  [0, 1, 2, 3, 4, 5, 6, 7,]
+

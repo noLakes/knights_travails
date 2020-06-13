@@ -1,51 +1,35 @@
 
-class Cell
-  attr_accessor :val
-  def initialize(val = '[ ]')
-    @val = val
+class Knight
+  attr_accessor :board
+
+  def initialize
+    @board = build_board
   end
 
-  def knight?
-    @val == '[K]'
-  end
-
-  def self.build_cells(amt)
-    output = []
-    amt.times {output << Cell.new}
-    output
-  end
-end
-
-class Board
-  attr_accessor :rows
-  attr_reader :knight
-
-  def initialize(rows = 8)
-    @rows = build_rows(rows)
-    @knight = self.rand_pos
-  end
-
-  def build_rows(amt)
-    output = []
-    until output.length == amt do 
-      output << Cell.build_cells(amt)
+  def build_board
+    board = Array.new
+    until board.length == 8 do
+      row = Array.new
+      until row.length == 8 do
+        row << [board.length, row.length]
+      end
+      board << row
     end
-    output
+    board
   end
 
   def txt
-    output = []
-    @rows.each_with_index do |row, idx|
-      output.unshift("#{idx}#{row.map {|c| c.val}.join('')}\n")
+    output = ["\n"]
+    @board.each_with_index do |row, idx|
+      output << " #{idx}#{ row.map { |pos| '[ ]' }.join('') }\n"
     end
-    output.unshift("\n")
-    output. << "  0  1  2  3  4  5  6  7"
-    output.join(' ')
+    output << "   0  1  2  3  4  5  6  7\n"
+    output.join('')
   end
 
   def pos(y, x)
     begin
-      self.rows[y].cells[x]
+      @board[y][x]
     rescue
       'nil'
     end
@@ -59,9 +43,6 @@ class Board
 
 end
 
-board = Board.new(8)
-puts board.txt
-
-#rework: remove Cell class and just make a row = [[0,0], [0,1], [0,2]....]
-                                            #or  [0, 1, 2, 3, 4, 5, 6, 7,]
-
+knight = Knight.new
+p knight.pos(99,6)
+puts knight.txt

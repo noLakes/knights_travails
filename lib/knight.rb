@@ -41,6 +41,11 @@ class Knight
     end
   end
 
+  def set_pos(pos)
+    @pos = pos
+    @valid = valid_moves(@pos)
+  end
+
   def get_pos(y, x)
     if y.between?(0, 7) and x.between?(0, 7)
       return @board[y][x]
@@ -64,8 +69,10 @@ class Knight
 
 end
 
+
 knight = Knight.new
-p knight.get_pos(99,6)
 puts knight.txt
 p knight.pos
 p knight.valid
+
+

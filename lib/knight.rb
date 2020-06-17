@@ -1,6 +1,7 @@
+require_relative 'graph.rb'
 
 class Knight
-  attr_accessor :board, :pos
+  attr_accessor :board, :pos, :graph
   attr_reader :MOVES, :valid
 
   def initialize
@@ -8,6 +9,7 @@ class Knight
     @board = build_board
     @pos =  rand_pos
     @valid = valid_moves(pos)
+    @graph = build_graph
   end
 
   def build_board
@@ -67,6 +69,14 @@ class Knight
     output
   end
 
+  def build_graph
+    graph = Graph.new
+    all_pos = @board.flatten(1)
+    all_pos.each { |p| graph.add_node(Node.new(p)) }
+    all_pos.each { |p| graph.add_edges(p, valid_moves(p)) }
+    graph
+  end
+
 end
 
 
@@ -74,5 +84,4 @@ knight = Knight.new
 puts knight.txt
 p knight.pos
 p knight.valid
-
-
+puts knight.graph.txt

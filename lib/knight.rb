@@ -82,6 +82,7 @@ end
 
 knight = Knight.new
 puts knight.txt
-p knight.pos
-p knight.valid
-puts knight.graph.txt
+map = knight.graph.distance_from_root([0, 0])
+p map
+
+

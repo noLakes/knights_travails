@@ -1,3 +1,4 @@
+require 'pry'
 
 class Node
   attr_reader :val, :adjacent_nodes
@@ -53,24 +54,39 @@ class Graph
     output.join("\n")
   end
 
-  def shortest_path(start_val, end_val, queue = [], visited = [], path = [])
-    return start_val if start_val == end_val
-    
-    queue << get_node(start_val)
-    
+  def build_distance_map(root_val = nil)
+    #builds a hash map for each node
+    map = {}
+    @nodes.each_key { |key| map[key] = {'distance' => nil, 'previous' => nil} }
+    if !root_val.nil?
+      map[root_val]['distance'] = 0
+    end
+    map
+  end
+
+  def distance_from_root(root_val, visited = [], queue = [])
+    #builds distance map and then sets a source node
+    map = build_distance_map(root_val)
+    queue << get_node(root_val)
+
     while !queue.empty? do
       read = queue.shift
-      path << read.val
-      break if read.val == end_val
       visited << read
-      
-      #add non seen adjacent nodes to queue
-      get_adjacent_nodes(read).each do |node| 
-        queue << node if !visited.include?(node) && !queue.include?(node)
+      #en-queue unvisited && non queued adjacents to read
+      #set their map[key] distance to = read[dist] + 1 and previous to = read.val
+      get_adjacent_nodes(read).each do |node|
+        unless visited.include?(node) || queue.include?(node)
+          queue << node
+          map[node.val]['distance'] = map[read.val]['distance'] + 1
+          map[node.val]['previous'] = read.val
+        end
       end
-
     end
-    path
+    map
+  end
+  
+  def shortest_path(root_val, target_val)
+    
   end
 
   def get_adjacent_nodes(node, output = [])
@@ -80,5 +96,4 @@ class Graph
     output
   end
   
-  #shortest_path(graph.nodes[[y, x]], graph.nodes[[y, x]])
 end

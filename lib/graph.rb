@@ -1,4 +1,3 @@
-require 'pry'
 
 class Node
   attr_reader :val, :adjacent_nodes
@@ -25,7 +24,6 @@ class Graph
   end
 
   def add_node(node)
-    #check if node already exists
     if !@nodes.include?(node.val)
       @nodes[node.val] = node
     end
@@ -55,7 +53,6 @@ class Graph
   end
 
   def build_distance_map(root_val = nil)
-    #builds a hash map for each node
     map = {}
     @nodes.each_key { |key| map[key] = {'distance' => nil, 'previous' => nil} }
     if !root_val.nil?
@@ -64,16 +61,14 @@ class Graph
     map
   end
 
-  def distance_from_root(root_val, visited = [], queue = [])
-    #builds distance map and then sets a source node
+  def map_with_root(root_val, visited = [], queue = [])
     map = build_distance_map(root_val)
     queue << get_node(root_val)
 
     while !queue.empty? do
       read = queue.shift
       visited << read
-      #en-queue unvisited && non queued adjacents to read
-      #set their map[key] distance to = read[dist] + 1 and previous to = read.val
+
       get_adjacent_nodes(read).each do |node|
         unless visited.include?(node) || queue.include?(node)
           queue << node
@@ -85,8 +80,16 @@ class Graph
     map
   end
   
-  def shortest_path(root_val, target_val)
-    
+  def shortest_path(root_val, target_val, output = [])
+    map = map_with_root(root_val)
+    return 'nil' if map[target_val]['distance'].nil?
+    output.unshift(target_val)
+    read = map[target_val]
+    until read['previous'] == nil
+      output.unshift(read['previous'])
+      read = map[read['previous']]
+    end
+    output
   end
 
   def get_adjacent_nodes(node, output = [])

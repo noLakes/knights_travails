@@ -77,12 +77,23 @@ class Knight
     graph
   end
 
+  def shortest_path(pos1, pos2)
+    path = @graph.shortest_path(pos1, pos2)
+    "Shortest path from #{pos1} => #{pos2}\n#{path}\n#{path.length-1} turns"
+  end
+
+  def follow_shortest_path(pos1, pos2)
+    path = @graph.shortest_path(pos1, pos2) 
+    path.each do |pos|
+      set_pos(pos)
+      puts self.txt
+      sleep 0.8
+    end
+    puts shortest_path(pos1, pos2)
+  end
+
 end
 
 
 knight = Knight.new
-puts knight.txt
-map = knight.graph.distance_from_root([0, 0])
-p map
-
-
+knight.follow_shortest_path(knight.rand_pos, knight.rand_pos)
